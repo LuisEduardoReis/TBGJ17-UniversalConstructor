@@ -11,7 +11,8 @@ public class Main extends Game {
 	public static int HEIGHT = 1080;
 	public static int SIZE = 96;
 	
-	public static boolean DEBUG = false;	
+	public static boolean DEBUG = false;
+	public static boolean MUSIC = false;
 	public static boolean SOUND = false;
 	
 	
@@ -19,15 +20,15 @@ public class Main extends Game {
 	public void create() {
 		Assets.createAssets();
 		
-		start(GameScreen.MENU);		
+		start();		
 	}
 
-	public void start(int state) {		
+	public void start() {		
 		Sprites.createSprites();
 		
-		setScreen(new GameScreen(this,state));
+		setScreen(new GameScreen(this));
 		
-		if (SOUND) Assets.music.play();
+		if (MUSIC) Assets.music.play();
 	}
 	
 	@Override
@@ -36,29 +37,33 @@ public class Main extends Game {
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
 		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) start(GameScreen.MENU);
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) start();
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.F4)) {
 			if (Gdx.graphics.isFullscreen()) { 
 				Gdx.graphics.setWindowedMode(Main.WIDTH/2, Main.HEIGHT/2);
-				start(GameScreen.PLAY);
+				start();
 			} else {
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-				start(GameScreen.PLAY);
+				start();
 			}
 		}
 	
-		if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) Main.DEBUG = !Main.DEBUG; 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
-			Main.SOUND = !Main.SOUND;
-			if (!Main.SOUND && Assets.music.isPlaying()) Assets.music.pause();
-			if (Main.SOUND && !Assets.music.isPlaying()) Assets.music.play();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) Main.DEBUG = !Main.DEBUG;
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+			Main.MUSIC ^= true;
+			if (!Main.MUSIC && Assets.music.isPlaying()) Assets.music.pause();
+			if (Main.MUSIC && !Assets.music.isPlaying()) Assets.music.play();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+			Main.SOUND ^= true;
 		}
 	}
 
-	public static void playSound(Sound sound) {
-		if (SOUND) sound.play();
-	}
 	
+	public static void playSound(Sound sound) { if (SOUND) sound.play(); }
+	
+	public static void randomSound(Sound[] sounds) {playSound(sounds[Util.randomRangei(sounds.length)]);}
 
 }

@@ -15,6 +15,7 @@ public class Assets {
 	public static Texture testBackground;
 	
 	public static Texture background, background2, controlsBackground;
+	public static TextureRegion xbox_controller, keyboardmouse_controller;
 	
 	public static Texture spritesheet;
 	public static TextureRegion[][] spritesheet96;
@@ -34,6 +35,9 @@ public class Assets {
 		background = new Texture(Gdx.files.internal("map2.png"));
 		background2 = new Texture(Gdx.files.internal("map3.png"));
 		controlsBackground = new Texture(Gdx.files.internal("controls.png"));
+		
+		xbox_controller = new TextureRegion(new Texture(Gdx.files.internal("xbox_controller.png")));
+		keyboardmouse_controller = new TextureRegion(new Texture(Gdx.files.internal("keyboardmouse_controller.png")));
 		
 		int s = Main.SIZE;	
 		

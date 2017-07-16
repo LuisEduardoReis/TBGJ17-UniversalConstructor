@@ -1,13 +1,13 @@
 package com.tbgj17.controllers;
 
 public interface GameController {
-
+	
 	void update();
 	
 	float getMoveAxisX();
 	float getMoveAxisY();
 
-	float getLookDir();
+	float getLookDir(float x, float y);
 	float getLookNormal();
 
 	boolean getShootingDown();

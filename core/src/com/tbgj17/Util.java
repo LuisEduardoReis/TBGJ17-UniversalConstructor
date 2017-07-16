@@ -1,9 +1,10 @@
 package com.tbgj17;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Affine2;
 
 public class Util {
 	
@@ -77,5 +78,15 @@ public class Util {
 		Util.drawTextCentered(batch, font, string, x, y);		
 	}
 	
-	public static void randomSound(Sound[] sounds) {Main.playSound(sounds[Util.randomRangei(sounds.length)]);}
+	static Affine2 t = new Affine2();
+	public static void drawCentered(SpriteBatch batch, TextureRegion tex, float x, float y, float s) {			
+		int w = tex.getRegionWidth(), h = tex.getRegionHeight();
+		
+		t.idt();
+		t.translate((int) x, (int) y);
+		t.scale(s, s);
+		t.translate(-w/2, -h/2);
+		
+		batch.draw(tex, w, h, t);
+	}
 }

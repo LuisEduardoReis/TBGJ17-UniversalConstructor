@@ -29,7 +29,7 @@ public class Creeper extends Enemy {
 		super.update(delta);
 		
 		direction = 0;
-		
+			
 		if  (!dead) {			
 			// Find closest player		
 			float dist = Float.MAX_VALUE; Player player = null;
@@ -53,6 +53,10 @@ public class Creeper extends Enemy {
 					remove = true;
 				}
 			}
+			
+			anim_speed = 1;
+		} else {
+			anim_speed = 0;
 		}
 	}	
 }

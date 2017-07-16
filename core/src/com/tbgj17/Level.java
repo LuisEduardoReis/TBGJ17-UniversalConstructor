@@ -2,12 +2,10 @@ package com.tbgj17;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.tbgj17.controllers.Xbox360Controller;
+import com.tbgj17.controllers.GameController;
 import com.tbgj17.entities.Entity;
 import com.tbgj17.entities.Generator;
 import com.tbgj17.entities.Player;
@@ -15,8 +13,8 @@ import com.tbgj17.entities.Player;
 public class Level {
 	public GameScreen game;
 	
-	public static Color player_colors[] = {Color.MAGENTA,Color.CYAN,Color.YELLOW,Color.GREEN};
-	public static String player_names[] = {"Anna","Rachel","Susie","Fiona"};
+	public static Color player_colors[] = {Color.MAGENTA,Color.CYAN,Color.YELLOW,Color.GREEN, Color.ORANGE};
+	public static String player_names[] = {"Anna","Rachel","Susie","Fiona","Mary"};
 	
 	public ArrayList<Entity> entities;
 	ArrayList<Entity> newEntities;
@@ -31,25 +29,24 @@ public class Level {
 		entities = new ArrayList<Entity>();
 		newEntities = new ArrayList<Entity>();
 		players = new ArrayList<Player>();
-		
-		int ci = 0;
-		for(Controller c : Controllers.getControllers()) {
-			Player player = (Player) new Player(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
-			player.blend = player_colors[ci];
-			player.name = player_names[ci];
-			player.controller = new Xbox360Controller(c);
-			players.add(player);
-			
-			game.addMessage(player.name + " is ready to fight!", player.blend);
-			game.message_times.set(game.message_times.size()-1, game.t-(4-ci)*0.5f);
-			
-			ci++; ci %= 4;
-		}
-				
+						
 		generator = (Generator) new Generator(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
 		spawner = new EnemySpawner(this);
 	}
 
+	public void createPlayer(GameController c) {
+		int ci = players.size() % player_colors.length;
+		float d = 1.5f*generator.radius, a = (float) (ci*2*Math.PI/5);
+		Player player = (Player) new Player(this).setPosition(Main.WIDTH/2 + d*((float) Math.cos(a)), Main.HEIGHT/2 +  d*((float) Math.sin(a)));
+		player.blend = player_colors[ci];
+		player.aux_color = player_colors[ci];
+		player.name = player_names[ci];
+		player.controller = c;
+		players.add(player);
+		
+		game.addMessage(player.name + " is ready to fight!", player.blend);
+	}
+	
 	public void addEntity(Entity e) {newEntities.add(e);}
 	
 	public void update(float delta) {

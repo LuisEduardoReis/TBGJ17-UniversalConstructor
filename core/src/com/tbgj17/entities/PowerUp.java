@@ -12,8 +12,12 @@ public class PowerUp extends Entity {
 	public PowerUp(Level level) {
 		super(level);
 		
-		if (level.countAlive(Player.class) < level.players.size())
-			this.type = (int) (Math.random()*5);
+		int deadPlayers = level.players.size() - level.countAlive(Player.class);
+		int revivePowerUps = 0;
+		for(Entity e : level.entities) if (e instanceof PowerUp && ((PowerUp) e).type == 4) revivePowerUps++;
+		
+		if (revivePowerUps < deadPlayers)
+			this.type = 4;
 		else
 			this.type = (int) (Math.random()*4);
 		

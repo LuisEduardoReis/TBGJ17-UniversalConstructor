@@ -1,5 +1,7 @@
 package com.tbgj17;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -67,6 +69,7 @@ public class EnemySpawner {
 		if (message_timer > 0) 	message_timer = Util.stepTo(message_timer, 0, delta);
 		if (message_timer == 0) message_timer = -1;
 		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.K)) spawnWave(1000);
 	}
 
 	private void showMessage(int code) {
@@ -116,7 +119,7 @@ public class EnemySpawner {
 				e = new Creeper(level);
 							
 			float dir = (float) (Math.random()*Math.PI*2);
-			float dist = 0.5f*Main.WIDTH;
+			float dist = 0.75f*Main.WIDTH;
 			e.x = Main.WIDTH/2 + (float) (dist * Math.cos(dir));
 			e.y = Main.HEIGHT/2 + (float) (dist * Math.sin(dir));
 			e.direction = (float) (Math.PI - dir);

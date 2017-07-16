@@ -5,19 +5,19 @@ import com.tbgj17.Util;
 
 public class Xbox360Controller implements GameController {
 
-	Controller c;
+	Controller controller;
 	boolean useButtonD, restartButtonD, shootButtonD, startButtonD;
 	boolean useButtonP, restartButtonP, shootButtonP, startButtonP;
 	
 	public Xbox360Controller(Controller c) {
-		this.c = c;
+		this.controller = c;
 	}
 	
 	public void update() {
-		boolean useButton = c.getButton(XBox360Pad.BUTTON_A);
-		boolean restartButton = c.getButton(XBox360Pad.BUTTON_Y);
-		boolean shootButton = Math.abs(c.getAxis(XBox360Pad.AXIS_RIGHT_TRIGGER)) > 0.5;
-		boolean startButton = c.getButton(XBox360Pad.BUTTON_START);
+		boolean useButton = controller.getButton(XBox360Pad.BUTTON_A);
+		boolean restartButton = controller.getButton(XBox360Pad.BUTTON_Y);
+		boolean shootButton = Math.abs(controller.getAxis(XBox360Pad.AXIS_RIGHT_TRIGGER)) > 0.5;
+		boolean startButton = controller.getButton(XBox360Pad.BUTTON_START);
 		
 		useButtonP = useButton && !useButtonD;
 		useButtonD = useButton;
@@ -33,22 +33,22 @@ public class Xbox360Controller implements GameController {
 	};
 
 	@Override
-	public float getMoveAxisX() { return c.getAxis(XBox360Pad.AXIS_LEFT_X); }
+	public float getMoveAxisX() { return controller.getAxis(XBox360Pad.AXIS_LEFT_X); }
 
 	@Override
-	public float getMoveAxisY() { return c.getAxis(XBox360Pad.AXIS_LEFT_Y); }
+	public float getMoveAxisY() { return controller.getAxis(XBox360Pad.AXIS_LEFT_Y); }
 
 	@Override
-	public float getLookDir() {
-		float rax = c.getAxis(XBox360Pad.AXIS_RIGHT_X);
-		float ray = c.getAxis(XBox360Pad.AXIS_RIGHT_Y);
+	public float getLookDir(float x, float y) {
+		float rax = controller.getAxis(XBox360Pad.AXIS_RIGHT_X);
+		float ray = controller.getAxis(XBox360Pad.AXIS_RIGHT_Y);
 		return - (float) Math.atan2(ray, rax);
 	}
 
 	@Override
 	public float getLookNormal() {
-		float rax = c.getAxis(XBox360Pad.AXIS_RIGHT_X);
-		float ray = c.getAxis(XBox360Pad.AXIS_RIGHT_Y);
+		float rax = controller.getAxis(XBox360Pad.AXIS_RIGHT_X);
+		float ray = controller.getAxis(XBox360Pad.AXIS_RIGHT_Y);
 		return Util.pointDistance(0, 0, rax, ray);
 	}
 
@@ -72,5 +72,11 @@ public class Xbox360Controller implements GameController {
 	public boolean getStartButtonDown() { return startButtonD; }
 	@Override
 	public boolean getStartButtonPressed() { return startButtonP; }
+	
+	
+	@Override
+	public String toString() {
+		return controller.toString();
+	}
 
 }

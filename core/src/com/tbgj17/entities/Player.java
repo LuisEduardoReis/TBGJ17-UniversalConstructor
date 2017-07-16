@@ -19,8 +19,6 @@ public class Player extends Entity {
 	public String name;
 	public GameController controller;
 	
-	public boolean A_Down, B_Down, X_Down, Y_Down, Start_Down;
-	
 	public float shoot_timer, shoot_delay;
 	public float shield_timer, shield_delay;
 	public float power_timer, power_delay;
@@ -71,7 +69,7 @@ public class Player extends Entity {
 			if(Math.abs(lax) > deadzone) this.x += speed*delta * lax;		
 			
 			if (controller.getLookNormal() > deadzone) {
-				this.direction = controller.getLookDir();
+				this.direction = controller.getLookDir(x,y);
 			} else if (Util.pointDistance(0, 0, lax,lay) > deadzone) {
 				this.direction = -((float) Math.atan2(lay, lax));
 			}		

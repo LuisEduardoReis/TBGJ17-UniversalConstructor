@@ -56,7 +56,7 @@ public class Enemy extends Entity {
 	public void damage(float damage) {
 		super.damage(damage);
 		
-		Util.randomSound(Assets.hurt);
+		Main.randomSound(Assets.hurt);
 	}
 		
 	
