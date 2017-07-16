@@ -7,6 +7,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.tbgj17.controllers.Xbox360Controller;
 import com.tbgj17.entities.Entity;
 import com.tbgj17.entities.Generator;
 import com.tbgj17.entities.Player;
@@ -36,7 +37,7 @@ public class Level {
 			Player player = (Player) new Player(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
 			player.blend = player_colors[ci];
 			player.name = player_names[ci];
-			player.controller = c;
+			player.controller = new Xbox360Controller(c);
 			players.add(player);
 			
 			game.addMessage(player.name + " is ready to fight!", player.blend);
@@ -44,24 +45,9 @@ public class Level {
 			
 			ci++; ci %= 4;
 		}
-		/*
-		Player player = (Player) new Player(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
-		player.blend = player_colors[2];
-		player.name = player_names[2];
-		players.add(player);
-		game.addMessage(player.name + " is ready to fight!", player.blend);
-		game.message_times.set(game.message_times.size()-1, game.t-(4-2)*0.5f);
-		player = (Player) new Player(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
-		player.blend = player_colors[3];
-		player.name = player_names[3];
-		players.add(player);
-		game.addMessage(player.name + " is ready to fight!", player.blend);
-		game.message_times.set(game.message_times.size()-1, game.t-(4-3)*0.5f);*/
 				
 		generator = (Generator) new Generator(this).setPosition(Main.WIDTH/2, Main.HEIGHT/2);
 		spawner = new EnemySpawner(this);
-		
-		spawner.startWaveTimer();
 	}
 
 	public void addEntity(Entity e) {newEntities.add(e);}
@@ -128,7 +114,7 @@ public class Level {
 	public void commonSounds(float delta) {
 		Player.shooting_timer = Util.stepTo(Player.shooting_timer, 0, delta);
 		if(Player.shooting && Player.shooting_timer == 0) {
-			Assets.shoot.play();
+			Main.playSound(Assets.shoot);
 			Player.shooting_timer = Player.SHOOT_DELAY;
 		}
 			

@@ -77,5 +77,5 @@ public class Util {
 		Util.drawTextCentered(batch, font, string, x, y);		
 	}
 	
-	public static void randomSound(Sound[] sounds) {sounds[Util.randomRangei(sounds.length)].play();}
+	public static void randomSound(Sound[] sounds) {Main.playSound(sounds[Util.randomRangei(sounds.length)]);}
 }

@@ -1,6 +1,5 @@
 package com.tbgj17.entities;
 
-import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tbgj17.Assets;
@@ -8,7 +7,7 @@ import com.tbgj17.Level;
 import com.tbgj17.Main;
 import com.tbgj17.Sprites;
 import com.tbgj17.Util;
-import com.tbgj17.XBox360Pad;
+import com.tbgj17.controllers.GameController;
 import com.tbgj17.entities.enemies.Enemy;
 import com.tbgj17.entities.particles.Explosion;
 import com.tbgj17.entities.particles.Particle;
@@ -18,7 +17,7 @@ public class Player extends Entity {
 	public static final float SHOOT_DELAY = 1.0f / 10;
 
 	public String name;
-	public Controller controller;
+	public GameController controller;
 	
 	public boolean A_Down, B_Down, X_Down, Y_Down, Start_Down;
 	
@@ -63,25 +62,23 @@ public class Player extends Entity {
 		
 		if(!dead & controller != null) {		
 			// Movement
-			float lax = controller.getAxis(XBox360Pad.AXIS_LEFT_X),
-				lay = controller.getAxis(XBox360Pad.AXIS_LEFT_Y);
-			float rax = controller.getAxis(XBox360Pad.AXIS_RIGHT_X),
-					ray = controller.getAxis(XBox360Pad.AXIS_RIGHT_Y);
+			float lax = controller.getMoveAxisX(),
+				lay = controller.getMoveAxisY();
 			float deadzone = 0.25f;
 			float speed = 4*Main.SIZE;
 			
 			if(Math.abs(lay) > deadzone) this.y -= speed*delta * lay;
 			if(Math.abs(lax) > deadzone) this.x += speed*delta * lax;		
 			
-			if (Util.pointDistance(0, 0, rax,ray) > deadzone) {
-				this.direction = -((float) Math.atan2(ray, rax));
+			if (controller.getLookNormal() > deadzone) {
+				this.direction = controller.getLookDir();
 			} else if (Util.pointDistance(0, 0, lax,lay) > deadzone) {
 				this.direction = -((float) Math.atan2(lay, lax));
 			}		
 			
 			// Shooting
 			shoot_timer = Util.stepTo(shoot_timer, 0, delta);
-			if (shoot_timer == 0 && Math.abs(controller.getAxis(XBox360Pad.AXIS_RIGHT_TRIGGER)) > 0.5) {
+			if (shoot_timer == 0 && controller.getShootingDown()) {
 				Bullet b = new Bullet(level);
 				b.blend = blend;
 				b.x = (float) (x + radius*Math.cos(direction-Math.PI/2) + 2*radius*Math.cos(direction));
@@ -95,69 +92,61 @@ public class Player extends Entity {
 				shooting = true;
 				shoot_timer = shoot_delay;
 			}			
-			
-			if (controller.getButton(XBox360Pad.BUTTON_A)) {
-				if (!A_Down) {
-					// A pressed
-					bar_anim_timer = Math.max(bar_anim_timer,bar_anim_delay);
-										
-					// Get closest in range powerup
-					float pdist = Float.MAX_VALUE; PowerUp pu = null;
-					for(Entity e : level.entities) {
-						if (!(e instanceof PowerUp)) continue;
-						float d = Util.pointDistance(x, y, e.x, e.y);
-						if (d < pdist) {
-							pdist = d;
-							pu = (PowerUp) e;
-						}
+
+			// A pressed
+			if (controller.getUseButtonPressed()) {
+				bar_anim_timer = Math.max(bar_anim_timer,bar_anim_delay);
+									
+				// Get closest in range powerup
+				float pdist = Float.MAX_VALUE; PowerUp pu = null;
+				for(Entity e : level.entities) {
+					if (!(e instanceof PowerUp)) continue;
+					float d = Util.pointDistance(x, y, e.x, e.y);
+					if (d < pdist) {
+						pdist = d;
+						pu = (PowerUp) e;
 					}
-					if (pu != null && pdist < 1.5f*pu.radius + radius) {
-						// PowerUps
-						switch(pu.type) {
-						case 0:
-							health = full_health;
-							break;
-						case 1:
-							shield_timer = Math.max(shield_timer, shield_delay);
-							break;
-						case 2:
-							power_timer = Math.max(power_timer, power_delay);
-							break;
-						case 3:
-							Explosion.explosion(x,y,level);
-							break;
-						case 4:
-							for(Player player : level.players) {
-								if (player.dead) {
-									player.revive();
-									new Particle(level).setDscale(10).setPosition(player.x, player.y).blend = Color.YELLOW;
-									break;
-								}
+				}
+				if (pu != null && pdist < 1.5f*pu.radius + radius) {
+					// PowerUps
+					switch(pu.type) {
+					case 0:
+						health = full_health;
+						break;
+					case 1:
+						shield_timer = Math.max(shield_timer, shield_delay);
+						break;
+					case 2:
+						power_timer = Math.max(power_timer, power_delay);
+						break;
+					case 3:
+						Explosion.explosion(x,y,level);
+						break;
+					case 4:
+						for(Player player : level.players) {
+							if (player.dead) {
+								player.revive();
+								new Particle(level).setDscale(10).setPosition(player.x, player.y).blend = Color.YELLOW;
+								break;
 							}
-							break;
 						}
-						pu.remove = true;
-						Assets.powerups[pu.type].play();
+						break;
 					}
+					pu.remove = true;
+					Main.playSound(Assets.powerups[pu.type]);
 				}
-				A_Down = true;
-			} else {
-				A_Down = false;
 			}
 			
-			// Skip
-			if (controller.getButton(XBox360Pad.BUTTON_Y)) {
-				if (!Y_Down) {
-					if (level.countAlive(Enemy.class) == 0) {
-						for(Entity e : level.entities) if (e instanceof Enemy) e.fade_anim_timer = Math.max(e.fade_anim_delay,e.fade_anim_timer);
-					}
-					
-					Y_Down = true;
-				} else {
-					Y_Down = false;
+			// Y pressed
+			if (controller.getRestartButtonPressed()) {
+				// Skip enemy collect
+				if (level.countAlive(Enemy.class) == 0) {
+					for(Entity e : level.entities) if (e instanceof Enemy) e.fade_anim_timer = Math.max(e.fade_anim_delay,e.fade_anim_timer);
 				}
 			}
+			
 		} else {
+			// Dead
 			shield_timer = 0;
 		}
 	}
@@ -190,7 +179,7 @@ public class Player extends Entity {
 
 
 	public void drag(Entity o) {
-		if (controller.getButton(XBox360Pad.BUTTON_A)) {
+		if (controller.getUseButtonDown()) {
 			float dist = (Util.pointDistance(x, y, o.x, o.y));
 			o.x += (x - o.x)/dist * (dist  - radius - o.radius);
 			o.y += (y - o.y)/dist * (dist  - radius - o.radius);

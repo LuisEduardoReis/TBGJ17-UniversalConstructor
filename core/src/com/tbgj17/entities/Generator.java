@@ -46,7 +46,7 @@ public class Generator extends Entity {
 			slow_matter = 0;
 			anim_timer = 3*anim_delay;
 			
-			Assets.coin[1].play();
+			Main.playSound(Assets.coin[1]);
 			
 			new PowerUp(level).setPosition(x, y).addEVel(Util.randomRangef(-500,500),-1000);;			
 		}
@@ -72,7 +72,7 @@ public class Generator extends Entity {
 					e.fade_anim_timer = Math.max(e.fade_anim_timer,e.fade_anim_delay);
 					matter += e.matter;
 					
-					if(matter<100) Assets.coin[2].play();
+					if(matter<100) Main.playSound(Assets.coin[2]);
 				}
 			}
 		}

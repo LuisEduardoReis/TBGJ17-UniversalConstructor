@@ -1,4 +1,4 @@
-package com.tbgj17;
+package com.tbgj17.controllers;
 
 import com.badlogic.gdx.controllers.PovDirection;
 

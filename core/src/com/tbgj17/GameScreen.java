@@ -67,8 +67,6 @@ public class GameScreen extends ScreenAdapter {
 		t = 0;
 		
 		state_anim_timer = 0;
-	
-		Assets.music.play();
 		
 		System.out.println(Controllers.getControllers());
 	}
@@ -82,6 +80,9 @@ public class GameScreen extends ScreenAdapter {
 		// Update
 		t += delta;
 		
+		// Update Controllers
+		for(Player p : level.players) p.controller.update();
+		
 		if (state == PLAY) {
 			level.update(Math.min(delta, 1/60f));		
 		}
@@ -90,7 +91,7 @@ public class GameScreen extends ScreenAdapter {
 		state_anim_timer = Util.stepTo(state_anim_timer, 1, 0.5f*delta);
 		
 		for(Player p : level.players) {
-			if (p.controller != null && p.controller.getButton(XBox360Pad.BUTTON_START)) {
+			if (p.controller != null && p.controller.getStartButtonDown()) {
 				if (!p.Start_Down) {
 					if (state != PLAY) state = (int) Util.stepTo(state, PLAY, 1);
 					else state = PAUSE;
@@ -213,7 +214,7 @@ public class GameScreen extends ScreenAdapter {
 					} 
 					
 					for(Player p : level.players) {
-						if (p.controller.getButton(XBox360Pad.BUTTON_Y)) main.start(GameScreen.PLAY);
+						if (p.controller.getRestartButtonDown()) main.start(GameScreen.PLAY);
 					}
 				}
 			} else  if (state == PAUSE) {
