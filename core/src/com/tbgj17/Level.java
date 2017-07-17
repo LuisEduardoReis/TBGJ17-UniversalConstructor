@@ -9,6 +9,7 @@ import com.tbgj17.controllers.GameController;
 import com.tbgj17.entities.Entity;
 import com.tbgj17.entities.Generator;
 import com.tbgj17.entities.Player;
+import com.tbgj17.entities.enemies.Enemy;
 
 public class Level {
 	public GameScreen game;
@@ -80,13 +81,12 @@ public class Level {
 				entities.remove(i).destroy();	
 		
 		// Restart game
-		if(countAlive(Player.class) == 0 && game.lose_rtimer < 0) game.lose_rtimer = 0; 
+		if(countAlivePlayers() == 0 && game.lose_rtimer < 0) game.lose_rtimer = 0; 
 		
 		// Sound
 		commonSounds(delta);
 	}
-	
-	
+		
 
 	public void render(SpriteBatch batch) {
 		for(Entity e : entities) e.render(batch);
@@ -94,17 +94,6 @@ public class Level {
 	
 	public void renderDebug(ShapeRenderer renderer) {
 		for(Entity e : entities) e.renderDebug(renderer);
-	}
-	
-	public int count(Class<? extends Entity> clazz) {
-		int r = 0;
-		for(Entity e : entities) if (clazz.isInstance(e)) r++; 
-		return r;
-	}
-	public int countAlive(Class<? extends Entity> clazz) {
-		int r = 0;
-		for(Entity e : entities) if (clazz.isInstance(e) && !e.dead) r++; 
-		return r;
 	}
 	
 	
@@ -116,5 +105,24 @@ public class Level {
 		}
 			
 		Player.shooting = false;
+	}
+
+
+	public int countAliveEnemies() {
+		int r = 0;
+		for(Entity e : entities) if (e instanceof Enemy && !e.dead) r++; 
+		return r;
+	}
+
+	public int countAlivePlayers() {
+		int r = 0;
+		for(Entity e : entities) if (e instanceof Player && !e.dead) r++; 
+		return r;
+	}
+
+	public float countEnemies() {
+		int r = 0;
+		for(Entity e : entities) if (e instanceof Enemy) r++; 
+		return r;
 	}
 }

@@ -138,7 +138,7 @@ public class Player extends Entity {
 			// Y pressed
 			if (controller.getRestartButtonPressed()) {
 				// Skip enemy collect
-				if (level.countAlive(Enemy.class) == 0) {
+				if (level.countAliveEnemies() == 0) {
 					for(Entity e : level.entities) if (e instanceof Enemy) e.fade_anim_timer = Math.max(e.fade_anim_delay,e.fade_anim_timer);
 				}
 			}

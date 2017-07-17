@@ -98,9 +98,9 @@ public class GameScreen extends ScreenAdapter {
 		
 		level = new Level(this);
 		
-		for(int i = 0; i < 5; i++)
-			//if (active_controllers[i])
-				level.createPlayer(controllers.get(Math.min(i+1,controllers.size()-1)));
+		for(int i = 0; i < controllers.size(); i++)
+			if (active_controllers[i])
+				level.createPlayer(controllers.get(i));
 		
 		lose_rtimer = -1;
 	}
@@ -245,6 +245,9 @@ public class GameScreen extends ScreenAdapter {
 			// Menu
 			switch(state) {
 			case MENU:
+				batch.setColor(0,0,0,0.5f);
+				batch.draw(Assets.fillTexture,0,0);
+				
 				font.getData().setScale(3.5f);
 				Util.drawTitle(batch, font, "Universal", Main.WIDTH/2, Main.HEIGHT*5.75f/6, state_anim_timer);
 				Util.drawTitle(batch, font, "Constructor", Main.WIDTH/2, Main.HEIGHT*4.75f/6, state_anim_timer);
@@ -256,17 +259,25 @@ public class GameScreen extends ScreenAdapter {
 				}
 				break;
 			case INSTRUCTIONS:
+				batch.setColor(0,0,0,0.5f);
+				batch.draw(Assets.fillTexture,0,0);
+				
 				font.getData().setScale(3f);
-				Util.drawTitle(batch, font, "Controls", Main.WIDTH/2,Main.HEIGHT*5.5f/6,state_anim_timer);
+				Util.drawTitle(batch, font, "Controls", Main.WIDTH/2,Main.HEIGHT*5.5f/6,state_anim_timer);				
+				
 				
 				batch.setColor(Color.WHITE);
-				batch.draw(Assets.controlsBackground,0,Main.HEIGHT/7);			
+				batch.draw(Assets.controlsBackground,0,-Main.HEIGHT/12);			
+				
 				
 				font.getData().setScale(1.5f);
 				font.setColor(1,1,1,state_anim_timer);
 				Util.drawTextCentered(batch, font, "Press Start/Space to continue", Main.WIDTH/2,Main.HEIGHT*1/6);
 				break;
 			case SELECT_CONTROLS:
+				batch.setColor(0,0,0,0.5f);
+				batch.draw(Assets.fillTexture,0,0);
+				
 				font.getData().setScale(1.5f);
 				Util.drawTitle(batch, font, "Select Controllers", Main.WIDTH/2,Main.HEIGHT*5.75f/6,state_anim_timer);
 				
@@ -302,6 +313,9 @@ public class GameScreen extends ScreenAdapter {
 				}
 				break;
 			case PLAY:
+				batch.setColor(0,0,0,0.5f*(1f-state_anim_timer));
+				batch.draw(Assets.fillTexture,0,0);
+				
 				// Messages
 				if (t < 4) { 
 					for(int i = 0; i < messages.size(); i++) {

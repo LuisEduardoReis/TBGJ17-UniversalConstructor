@@ -51,7 +51,7 @@ public class EnemySpawner {
 			wave_timer = Util.stepTo(wave_timer, 0, delta);
 		}
 		
-		if (level.countAlive(Enemy.class) == 0 && wave_timer == -1) startWaveTimer();		
+		if (level.countAliveEnemies() == 0 && wave_timer == -1) startWaveTimer();		
 	
 		
 		if (wave_timer == 0) {
@@ -104,7 +104,7 @@ public class EnemySpawner {
 	}
 	
 	public float getWaveDelay() {
-		return Util.clamp(0.5f*level.count(Enemy.class),10,20);
+		return Util.clamp(0.5f*level.countEnemies(),10,20);
 	}
 	
 	public void spawnWave(int wave) {
