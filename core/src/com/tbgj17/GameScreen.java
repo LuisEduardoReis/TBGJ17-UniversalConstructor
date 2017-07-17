@@ -352,7 +352,7 @@ public class GameScreen extends ScreenAdapter {
 				Util.drawTextCentered(batch, font, t % 1 > 0.5 ? "<Paused>" : " Paused ", Main.WIDTH/2,Main.HEIGHT*4/5);
 				
 				batch.setColor(Color.WHITE);
-				batch.draw(Assets.controlsBackground,0,0);
+				batch.draw(Assets.controlsBackground,0,-Main.HEIGHT/6);
 				break;
 			default:
 				break;			
